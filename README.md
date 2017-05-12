@@ -1,4 +1,4 @@
-# MyMonero JS Desktop & Cordova Apps
+# MyMonero JS - Desktop (Electron) & Android (Cordova) Apps
 
 ![Logo](https://raw.githubusercontent.com/mymonero/mymonero-app-js/master/docs/assets/icon_100.png "Logo")
 
@@ -20,8 +20,7 @@
 3. Building for Production
 4. Running in Development Mode
 5. Contributing
-6. MyMonero Core Contributors
-7. License and Copyrights
+6. License and Copyrights
 
 
 ## What's in This Repo?
@@ -36,7 +35,7 @@ MyMonero is a simple and featureful way to use the next-generation private digit
 MyMonero is currently available for:
 
 * desktop on Mac, Windows, and Linux; and
-* mobile on iOS and Android.
+* mobile on Android.
 
 The main reasons people use MyMonero are its convenience and featurefulness. To accomplish this convenience and other features of MyMonero, there's the privacy trade-off of sharing your private Monero "view key" with the MyMonero server, so that it can scan the network for your wallets' transactions on your behalf. But it's impossible for MyMonero to spend any of your funds or otherwise access your metadata, because your "private spend key" and "private wallet mnemonic/seed" are never sent to our server. So MyMonero is often described as a 'non-custodial' service. In fact, in the near future, even the above trade-off will be eliminated as we're presently working to open-source a version of the back-end, which anybody can run as their own server at home.
 
@@ -79,13 +78,15 @@ The desktop app is built on [Electron](https://electron.atom.io) and can be pack
 * Windows (installer .exe)
 * Linux (.appimage)
 
-The mobile apps are built on [Apache Cordova](https://cordova.apache.org) and can be packaged for iOS and Android. 
+The mobile apps are built on [Apache Cordova](https://cordova.apache.org) and can be packaged for Android. 
+
+**Note about Cordova version** Apache has recently released Cordova 7.0.0. It was tested, but because it now places plugins into package.json, npm cannot `update`, as a handful of those plugins do not have package.json files, and npm and yarn (based on current info) cannot install them as deps. So **6.5.0** is the Cordova version that MyMonero currently supports for mobile builds, and it can be selected for use with `[sudo] npm install -g cordova@6.5.0`.
 
 ### User Data Locations
 
 * Mac / Windows / Linux: via Electron's [`app.getPath('userData')`](https://github.com/electron/electron/blob/master/docs/api/app.md#appgetpathname)
 
-* Android / iOS: via [`cordova.file.dataDirectory`](https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-file/)
+* Android: via [`cordova.file.dataDirectory`](https://cordova.apache.org/docs/en/latest/reference/cordova-plugin-file/)
 
 
 
@@ -136,12 +137,11 @@ For customer support, you can also [contact](https://mymonero.com/support) us di
 
 ### Cordova
 
-*If you are going to run the app under any of the Cordova / mobile platforms*
+*If you are going to run the Cordova app under Android*
 
-1. Install all Cordova development dependencies for iOS and Android. See [Cordova Installation Notes](./docs/CORDOVA_INSTALL.md) for details.
+1. Install all Cordova development dependencies for Android. See [Cordova Installation Notes](./docs/CORDOVA_INSTALL.md) for details.
 
 2. Run `bin/setup_repo_for_cordova`.
- 
 
 
 ## Repository Contents
@@ -177,18 +177,6 @@ See [Packaging the App for Production Mode](./docs/PRODUCTION_BUILDS.md) for inf
 
 ### Cordova
 
-#### iOS - Simulator
-
-*Causes the Safari Web Inspector to be shown and attached to the Simulator app's WebView (Update: inspector auto-open now commented due to conflict with web workers, see #63)*
-
-`bin/start_dev_cordova_ios_sim`
-
-#### iOS - Device
-
-*Requires you to specify your signing info, e.g. development team in the Xcode project*
-
-`bin/start_dev_cordova_ios_device`
-
 #### Android - Emulator
 
 *Debugging is possible through Chrome; navigate to "chrome://inspect"*
@@ -197,18 +185,9 @@ See [Packaging the App for Production Mode](./docs/PRODUCTION_BUILDS.md) for inf
 
 #### Android - Device
 
-*Needs more testing*
-
 *Ensure that the USB Debugging is enabled and that the session is accepted on your Android device if you get `device.js` error. Also try removing the USB cable and replacing it. Navigate to "chrome://inspect" to monitor debug status. Also may help to run `adb logcat` while installing.*
 
 `bin/start_dev_cordova_android_device`
-
-
-#### Browser
-
-*Used for Cordova debug only - not distributed*
-
-`bin/start_dev_cordova_browser`
 
 
 ## Contributing
@@ -219,18 +198,9 @@ If you would like to contribute, please scan the [technology notes](./docs/TECHN
 
 For background on this project, see [Why We Built the Native Apps](./docs/WHY_NATIVE.md).
 
-There is no specific code styleguide yet (with the exception of the preference of tab-indentation) but we ask that code contributions:
-
-* are kept modular or well factored, either platform-agnostic or with platform specified (see [Technology Notes](./docs/TECHNOLOGY.md)),
-* are written in a clear, understandable, [simple](https://www.infoq.com/presentations/Simple-Made-Easy), and maintainable manner, 
-* employ best practices, and 
-* are well tested and don't break anything, especially security.
-
 You may also like to read the unofficial [Technology Roadmap](./docs/ROADMAP.md) to get a peek at what we're thinking about for the future.
 
 There's also an icebox of ideas, features, improvements, known issues, and other todos waiting to be knocked out which are kept in the [Issues](https://github.com/mymonero/monero-app-js/issues) tracker.
-
-**At the moment, the performance of the Cordova apps needs improvement and further testing. Contributions welcome. Information can be found on issue [#63](https://github.com/mymonero/mymonero-app-js/issues/63).**
 
 ### Getting Help with Testing or Contributing
 
@@ -238,11 +208,26 @@ Feel free to create a Github issue if you want to report bugs, discuss improveme
 
 MyMonero testers and contributors have also been rumored to hang out on IRC in [#mymonero on freenode](http://webchat.freenode.net/?channels=%23mymonero&prompt=1&uio=d4).
 
-## MyMonero Core Contributors
+### Code Style Guidelines
+
+There is no specific code styleguide yet (with the exception of the preference of tab-indentation) but we ask that code contributions generally:
+
+* are kept modular or well factored, either platform-agnostic or with platform specified (see [Technology Notes](./docs/TECHNOLOGY.md)),
+* are written in a clear, understandable, [simple](https://www.infoq.com/presentations/Simple-Made-Easy), and maintainable manner, 
+* employ best practices, and 
+* are well tested and don't break anything, especially security.
+
+### Conditions on Merging PRs
+
+* Pull Requests which ask us to merge integration with any third-party services will require discussion and agreement.  
+
+* We reserve the right to refuse to merge any PRs, such as those which introduce breaking changes.
+
+### MyMonero Core Contributors
 
 Contributors to each release are credited in release notes.
 
-The MyMonero core contributors listed below either work full-time on MyMonero or have made ongoing and/or critical contributions.
+The MyMonero "core contributors" listed below either work on MyMonero full-time, have made essential contributions, and/or have had long-term involvement.
 
 * 🏂 [Paul Shapiro](https://github.com/paulshapiro) `endogenic` – Project maintainer; Lead client app developer; Partner
 
@@ -253,6 +238,8 @@ The MyMonero core contributors listed below either work full-time on MyMonero or
 * 🔥 [Matt D Smith](http://mds.is) `mds` – v1/MVP app designer
 
 * 🍄 [luigi1111](https://github.com/luigi1111) `luigi1112` – Monero tech advisor; Built client-side RingCT support
+
+* ✈️ [tfi_charmers](https://github.com/tficharmers) `tficharmers` – MyMonero website/front-end developer
 
 * 🌠 Your name here?
 
