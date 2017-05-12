@@ -71,7 +71,7 @@ class UseExisting_MetaInfo_View extends BaseView_Wallet_MetaInfo
 		const div = commonComponents_forms.New_fieldContainerLayer(self.context)
 		div.style.paddingBottom = "0" // instead of 20, here, special case... we will move the 20 to the "Or, use…" layer
 		{
-			const labelLayer = commonComponents_forms.New_fieldTitle_labelLayer("SECRET MNEMONIC", self.context)
+			const labelLayer = commonComponents_forms.New_fieldTitle_labelLayer("ENTER SECRET MNEMONIC", self.context)
 			div.appendChild(labelLayer)
 			{
 				const tooltipText = "This secret mnemonic is never<br/>sent to the MyMonero server."
@@ -313,7 +313,7 @@ class UseExisting_MetaInfo_View extends BaseView_Wallet_MetaInfo
 	//
 	Navigation_Title()
 	{
-		return "Log Into Your Wallet"
+		return "Import Existing Wallet"
 	}
 	Navigation_New_LeftBarButtonView()
 	{

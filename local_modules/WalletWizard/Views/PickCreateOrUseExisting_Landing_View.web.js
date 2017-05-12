@@ -86,7 +86,7 @@ class PickCreateOrUseExisting_Landing_View extends BaseView_AWalletWizardScreen
 	{
 		const self = this
 		const buttonView = commonComponents_actionButtons.New_ActionButtonView(
-			"Use existing wallet", 
+			"Import existing wallet", 
 			null, // no image
 			false,
 			function(layer, e)

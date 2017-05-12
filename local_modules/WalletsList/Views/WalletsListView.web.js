@@ -150,7 +150,7 @@ class WalletsListView extends ListView
 	{
 		const self = this
 		const buttonView = commonComponents_actionButtons.New_ActionButtonView(
-			"Use existing wallet", 
+			"Import existing wallet", 
 			null, // no image
 			false,
 			function(layer, e)
