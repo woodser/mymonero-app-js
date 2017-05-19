@@ -74,16 +74,17 @@ class UseExisting_MetaInfo_View extends BaseView_Wallet_MetaInfo
 			const labelLayer = commonComponents_forms.New_fieldTitle_labelLayer("PRIVATE MNEMONIC SEED", self.context)
 			div.appendChild(labelLayer)
 			{
-				const tooltipText = "The mnemonic seed is a<br/>series of words that<br>imports a wallet.<br/><br/>" +
-					"The mnemonic seed should be kept <b>secret</b><br><br>" +
-					"The mnemonic seed entered is never sent to<br/>the MyMonero server."
+			    const tooltipText =
+			    	"The mnemonic seed is a series<br/>of words to import and<br/>access funds in a wallet.<br/><br/>" + 
+			    	"All funds in a wallet can be<br/>spent with its mnemonic<br/>seed so keep it <b>private</b>.<br/><br/>" +
+			    	"The mnemonic seed entered is<br/>never sent to the MyMonero<br/>server.";
 				const view = commonComponents_tooltips.New_TooltipSpawningButtonView(tooltipText, self.context)
 				const layer = view.layer
 				labelLayer.appendChild(layer)
 			}
 			//
 			const view = commonComponents_forms.New_fieldValue_textAreaView({
-				placeholderText: "Enter the private mnemonic seed from your existing wallet here..."
+				placeholderText: "Enter your wallet's private mnemonic seed..."
 			}, self.context)
 			view.layer.autocorrect = "off"
 			view.layer.autocomplete = "off"

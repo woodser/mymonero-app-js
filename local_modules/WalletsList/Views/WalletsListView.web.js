@@ -150,7 +150,7 @@ class WalletsListView extends ListView
 	{
 		const self = this
 		const buttonView = commonComponents_actionButtons.New_ActionButtonView(
-			"Import existing wallet", 
+			"Import Existing Wallet", 
 			null, // no image
 			false,
 			function(layer, e)
@@ -168,7 +168,7 @@ class WalletsListView extends ListView
 	{
 		const self = this
 		const buttonView = commonComponents_actionButtons.New_ActionButtonView(
-			"Create new wallet", 
+			"Create New Wallet", 
 			null, // no image
 			true,
 			function(layer, e)
