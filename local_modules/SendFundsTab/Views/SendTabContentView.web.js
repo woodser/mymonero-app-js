@@ -88,7 +88,7 @@ class SendTabContentView extends StackAndModalNavigationView
 	{
 		const self = this
 		const passwordController = self.context.passwordController
-		if (passwordController.hasUserEverEnteredPasswordDuringThisBoot !== true) {
+		if (passwordController.hasUserSavedAPassword !== true) {
 			return true // no existing data - do disable
 		}
 		if (passwordController.HasUserEnteredValidPasswordYet() !== true) { // has data but not unlocked app
@@ -123,11 +123,11 @@ class SendTabContentView extends StackAndModalNavigationView
 		) 
 		self.sendFundsView._proxied_ondragenter(e)
 	}
-    _proxied_ondragleave(e)
+	_proxied_ondragleave(e)
 	{
 		const self = this
 		self.sendFundsView._proxied_ondragleave(e)
-    }
+	}
 	_proxied_ondrop(e)
 	{
 		const self = this

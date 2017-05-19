@@ -32,21 +32,21 @@ const path = require('path')
 //
 module.exports = 
 {
-	devtool: "inline-source-map",
+	devtool: "source-map",// "inline-source-map",
 	context: __dirname,
 	entry: "./local_modules/MainWindow/Views/index.cordova.js",
 	output: {
 		path: path.resolve(__dirname, "www"),
 		filename: "bundle.js"
 	},
-    resolve: {
-        alias: {
-        	"fs": "html5-fs"
-        }
-    },
-    externals: {
-    	"pg": "pg" // we simply want to prevent webpack from trying to bundle Raven -> pg
-    },
+	cache: false,
+	resolve: {
+		alias: {
+			"fs": "html5-fs"
+		}
+	},
+	externals: {
+	},
 	module: {
 		loaders: [
 			{ 
@@ -70,6 +70,8 @@ module.exports =
 				loader: 'babel-loader',
 				options: {
 					cacheDirectory: false,
+					// presets: ["es2015"],
+					// plugins: ["transform-runtime"]
 				},
 				exclude: path.join(__dirname, 'node_modules')
 			},

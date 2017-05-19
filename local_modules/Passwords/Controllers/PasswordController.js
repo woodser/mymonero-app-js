@@ -73,8 +73,8 @@ class PasswordController extends EventEmitter
 		self.setupAndBoot()
 	}
 	setupAndBoot()
-	{ // we can afford to do this w/o any callback saying "success" because we defer execution of
-	  // things which would rely on boot-time info till we've booted
+	{	// we can afford to do this w/o any callback saying "success" because we defer execution of
+		// things which would rely on boot-time info till we've booted
 		const self = this
 		//
 		// first, check if any password model has been stored
@@ -85,7 +85,6 @@ class PasswordController extends EventEmitter
 				if (err) {
 					console.error("Error while fetching existing", CollectionName, err)
 					throw err
-					return
 				}
 				const docs_length = docs.length
 				if (docs_length === 0) { //
@@ -113,11 +112,11 @@ class PasswordController extends EventEmitter
 			}
 		)
 		function _proceedTo_loadStateFromModel(
-			hasUserEverEnteredPasswordDuringThisBoot,
+			hasUserSavedAPassword,
 			passwordModel_doc
 		)
 		{
-			self.hasUserEverEnteredPasswordDuringThisBoot = hasUserEverEnteredPasswordDuringThisBoot
+			self.hasUserSavedAPassword = hasUserSavedAPassword
 			//
 			self._id = passwordModel_doc._id || undefined
 			self.userSelectedTypeOfPassword = passwordModel_doc.userSelectedTypeOfPassword
@@ -127,7 +126,6 @@ class PasswordController extends EventEmitter
 					const errStr = "Found undefined encrypted msg for unlock challenge in saved password model document" // TODO: not sure how to handle this case. delete all local info? would suck
 					console.error(errStr)
 					throw errStr
-					return
 				}
 			}
 			self._initial_waitingForFirstPWEntryDecode_passwordModel_doc = passwordModel_doc // this will be nil'd after it's been parsed once the user has entered their pw
@@ -157,7 +155,7 @@ class PasswordController extends EventEmitter
 			controller.EventName_userDidBecomeIdle(),
 			function()
 			{
-				if (self.hasUserEverEnteredPasswordDuringThisBoot !== true) {
+				if (self.hasUserSavedAPassword !== true) {
 					// nothing to do here because the app is not unlocked and/or has no data which would be locked
 					console.log("💬  User became idle but no password has ever been entered/no saved data should exist.")
 					return
@@ -259,7 +257,7 @@ class PasswordController extends EventEmitter
 			return str.charAt(0).toUpperCase() + str.slice(1)
 		}
 		//
-	    return __capitalizedString(humanReadable_passwordType)
+		return __capitalizedString(humanReadable_passwordType)
 	}
 	//
 	HasUserEnteredValidPasswordYet()
@@ -398,8 +396,7 @@ class PasswordController extends EventEmitter
 		self.OnceBooted_GetNewPasswordAndTypeOrExistingPasswordFromUserAndEmitIt()
 	}
 	OnceBooted_GetNewPasswordAndTypeOrExistingPasswordFromUserAndEmitIt()
-	{ // This function must be called in order to initiate a password entry screen being shown to the user
-	  // and to initiate any "password obtained" emits
+	{	// This function must be called in order to initiate a password entry screen being shown to the user and to initiate any "password obtained" emits
 		const self = this
 		self._executeWhenBooted(
 			function()
@@ -429,7 +426,6 @@ class PasswordController extends EventEmitter
 						console.error(errStr)
 						self.unguard_getExistingPassword()
 						throw errStr
-						return
 					}	
 					self._getUserToEnterTheirExistingPassword(
 						isForChangePassword,
@@ -495,13 +491,12 @@ class PasswordController extends EventEmitter
 			if (self.HasUserEnteredValidPasswordYet() === false) {
 				const errStr = "InitiateChangePassword called but HasUserEnteredValidPasswordYet === false. This should be disallowed in the UI"
 				throw errStr
-				return
 			}
 			{ // guard
 				if (self.isAlreadyGettingExistingOrNewPWFromUser === true) {
 					const errStr = "InitiateChangePassword called but isAlreadyGettingExistingOrNewPWFromUser === true. This should be precluded in the UI"
 					throw errStr
-					return // only need to wait for it to be obtained
+					// only need to wait for it to be obtained
 				}
 				self.isAlreadyGettingExistingOrNewPWFromUser = true
 			}
@@ -678,9 +673,8 @@ class PasswordController extends EventEmitter
 				} else { // this is weird - code fault or cracking attempt?
 					self.unguard_getNewOrExistingPassword()
 					const err = new Error("Unrecognized password type")
-					throw err
 					self.emit(self.EventName_ErroredWhileSettingNewPassword(), err)
-					return
+					throw err
 				}
 				if (isForChangePassword === true) {
 					if (self.password === obtainedPasswordString) { // they are disallowed from using change pw to enter the same pw… despite that being convenient for dev ;)
@@ -694,9 +688,8 @@ class PasswordController extends EventEmitter
 						} else { 
 							self.unguard_getNewOrExistingPassword()
 							const err = new Error("Unrecognized password type")
-							throw err
 							self.emit(self.EventName_ErroredWhileSettingNewPassword(), err)
-							return
+							throw err
 						}
 						self.emit(self.EventName_ErroredWhileSettingNewPassword(), err)
 						return // bail 
@@ -776,9 +769,8 @@ class PasswordController extends EventEmitter
 		if (self.password === null || typeof self.password === 'undefined') {
 			const errStr = "Code fault: saveToDisk musn't be called until a password has been set"
 			console.error(errStr)
-			throw errStr
 			fn(new Error(errStr))
-			return
+			throw errStr
 		}
 		const encryptedMessageForUnlockChallenge = symmetric_string_cryptor.EncryptedBase64String__Async(
 			plaintextMessageToSaveForUnlockChallenges,
@@ -787,8 +779,8 @@ class PasswordController extends EventEmitter
 			{
 				if (err) {
 					console.error("Error while encrypting message for unlock challenge:", err)
-					throw err
 					fn(err)
+					throw err
 				}
 				self.encryptedMessageForUnlockChallenge = encryptedMessageForUnlockChallenge // it's important that we hang onto this in memory so we can access it if we need to change the password later
 				const persistableDocument =
@@ -802,9 +794,8 @@ class PasswordController extends EventEmitter
 					function(err, finalized_persistableDocument)
 					{
 						if (err) {
-							throw err
 							fn(err)
-							return
+							throw err
 						}
 						// console.log("modelObject" , modelObject)
 						// insert & update fn declarations for imminent usage…
@@ -878,9 +869,9 @@ class PasswordController extends EventEmitter
 		fn = fn || function(err){} 
 		//
 		const self = this
-		const existing_hasUserEverEnteredPasswordDuringThisBoot = self.hasUserEverEnteredPasswordDuringThisBoot
+		const existing_hasUserSavedAPassword = self.hasUserSavedAPassword
 		self.password = password
-		self.hasUserEverEnteredPasswordDuringThisBoot = true // we can now flip this to true
+		self.hasUserSavedAPassword = true // we can now flip this to true
 		//
 		const waiting_passwordModel_doc = self._initial_waitingForFirstPWEntryDecode_passwordModel_doc
 		if (typeof waiting_passwordModel_doc !== 'undefined' && waiting_passwordModel_doc !== null) {
@@ -903,13 +894,12 @@ class PasswordController extends EventEmitter
 	//
 	InitiateDeleteEverything(fn)
 	{ // this is used as a central initiation/sync point for delete everything like user idle
-	  // maybe it should be moved, maybe not.
-	  // And note we're assuming here the PW has been entered already.
+		// maybe it should be moved, maybe not.
+		// And note we're assuming here the PW has been entered already.
 		const self = this
-		if (self.HasUserEnteredValidPasswordYet() === false) {
-			const errStr = "InitiateDeleteEverything called but HasUserEnteredValidPasswordYet === false. This should be disallowed in the UI"
+		if (self.hasUserSavedAPassword !== true) {
+			const errStr = "InitiateDeleteEverything called but hasUserSavedAPassword !== true. This should be disallowed in the UI"
 			throw errStr
-			return
 		}
 		self._deconstructBootedStateAndClearPassword(
 			true, // yes, is for a 'delete everything'
@@ -918,7 +908,7 @@ class PasswordController extends EventEmitter
 				// reset state cause we're going all the way back to pre-boot 
 				self.hasBooted = false // require this pw controller to boot
 				self.password = undefined // this is redundant but is here for clarity
-				self.hasUserEverEnteredPasswordDuringThisBoot = false
+				self.hasUserSavedAPassword = false
 				self._id = undefined
 				self.encryptedMessageForUnlockChallenge = undefined
 				self._initial_waitingForFirstPWEntryDecode_passwordModel_doc = undefined
@@ -961,7 +951,6 @@ class PasswordController extends EventEmitter
 				if (err) {
 					fn(err)
 					throw err
-					return
 				}
 				self.emit(self.EventName_havingDeletedEverything_didDeconstructBootedStateAndClearPassword())
 				fn()
